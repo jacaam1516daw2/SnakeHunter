@@ -1,0 +1,20 @@
+extends layout
+
+block content
+    #login
+      h2 Indica un nick
+      input(id='add-nick', type='text', name='nick', maxlength='20')
+      input(id='add-login', type='submit', value='Login')
+    #play
+      input(id='add-play', onclick='init()', type='submit', value='Jugar')
+    #game
+      h1 SNAKE HUNTER
+      #theplayer
+        #color
+          h3
+        h2
+          | Score:
+          #score
+    #jugadores
+      .estado(data-jugador='1')
+        .nombre Esperando jugador...
