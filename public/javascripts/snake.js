@@ -1,5 +1,3 @@
-var canvas = null;
-
 $(function () {
     $('#add-login').click(function () {
         $('#login').hide();
@@ -77,9 +75,8 @@ function init() {
         interval = 1;
     }
 
-    if (canvas == null) {
-        canvas = doc.createElement('canvas');
-    }
+    var canvas = doc.createElement('canvas');
+
     //si pulsamos otra vez el espacio reanudamos el juego
     var setInt = win.setInterval;
     //Si pulsamos la barra de espacio hacemos una pausa en el juego parando el interval
