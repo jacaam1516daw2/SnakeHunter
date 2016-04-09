@@ -4,9 +4,14 @@ block content
     #login
       h2 Indica un nick
       input(id='add-nick', type='text', name='nick', maxlength='20')
-      input(id='add-login', type='submit', value='Login')
+      input.btn(id='add-login', type='submit', value='Login')
     #play
-      input(id='add-play', onclick='init()', type='submit', value='Jugar')
+      br
+      br
+      input.btn(id='add-play', onclick='init()', type='submit', value='Jugar')
+      br
+      br
+      input.btn(id='add-stop', onclick='stop()', type='submit', value='Parar')
     #game
       h1 SNAKE HUNTER
       #theplayer
@@ -16,5 +21,5 @@ block content
           | Score:
           #score
     #jugadores
-      .estado(data-jugador='1')
-        .nombre Esperando jugador...
+      h2 Top Teen Players
+      ul#player

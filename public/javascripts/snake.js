@@ -1,7 +1,9 @@
+var canvas = null;
+
 $(function () {
     $('#add-login').click(function () {
-        user = $('#add-nick').val();
         $('#login').hide();
+        user = $('#add-nick').val();
         $('<li>').appendTo('h3').text(user);
         $.ajax({
             type: "POST",
@@ -11,7 +13,30 @@ $(function () {
             }),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
-            success: function (data) {}
+            success: function (data) {
+                $('#player li').remove();
+                for (var i = 0; i < data.top.length; i++) {
+                    $('<li>').appendTo('#player').text(data.top[i]);
+                    if (i == 9)
+                        break;
+                }
+            },
+        });
+    });
+});
+
+$(function () {
+    $('#add-stop').click(function () {
+        $('canvas').remove();
+        var puntos = $('#score').text();
+        $.ajax({
+            type: "POST",
+            url: "/stop",
+            data: JSON.stringify({
+                score: puntos
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
         });
     });
 });
@@ -48,7 +73,13 @@ function init() {
     var win = window;
     var doc = document;
 
-    var canvas = doc.createElement('canvas');
+    function stop() {
+        interval = 1;
+    }
+
+    if (canvas == null) {
+        canvas = doc.createElement('canvas');
+    }
     //si pulsamos otra vez el espacio reanudamos el juego
     var setInt = win.setInterval;
     //Si pulsamos la barra de espacio hacemos una pausa en el juego parando el interval
@@ -63,7 +94,7 @@ function init() {
     canvas.setAttribute('height', 40 * 10);
 
     ctx = canvas.getContext('2d');
-    30
+
     doc.body.appendChild(canvas);
 
     function placeFood() {
@@ -195,9 +226,4 @@ function aleatorio(inferior, superior) {
     aleat = Math.random() * numPosibilidades
     aleat = Math.floor(aleat)
     return parseInt(inferior) + aleat
-}
-
-function ocultaLogin() {
-    document.getElementById("login").hidden = "hidden";
-    init();
 }
