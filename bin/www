@@ -27,6 +27,25 @@ var socket = io.listen(server, {log: false});
 socket.on("connection", function(client) {
     client.emit("connection", "msg from server");
 });
+
+// A user connects to the server (opens a socket)
+io.sockets.on('connection', function (socket) {
+    socket.on('ping', function (data) {        
+        io.sockets.emit('pong', data);       
+    });
+
+    socket.on('pintaSerp', function (data, session) {    
+        socket.broadcast.emit('pintaSerp', data);
+        console.log('pintaSerp')
+    });
+
+    socket.on('borraSerp', function (data, session) {      
+        socket.broadcast.emit('borraSerp', data);
+        console.log('borraSerp')
+    });
+});
+
+
 /**
  * Listen on provided port, on all network interfaces.
  */

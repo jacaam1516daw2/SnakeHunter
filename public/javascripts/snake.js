@@ -38,10 +38,11 @@ $(function () {
         });
     });
 });
+var ctx;
 
 function init() {
     var color = dame_color_aleatorio();
-    var ctx;
+
     var turn = [];
 
     var xV = [-1, 0, 1, 0];
@@ -129,8 +130,8 @@ function init() {
             }
 
             //pintamos nueva posicion de la serpiente en cada vuelta
-            pintaSerp(X, Y, ctx);
-            emitSnake(X, Y, ctx);
+            pintaSerp(X, Y);
+            emitSnake(X, Y);
 
             map[X][Y] = 2;
             queue.unshift([X, Y]);
@@ -142,8 +143,8 @@ function init() {
                 map[dir[0]][dir[1]] = 0;
                 ctx.fillStyle = color;
                 //borramos la antigua posicion de la serpiente
-                borraSerp(dir[0], dir[1], ctx)
-                emitClearSnake(dir[0], dir[1], ctx);
+                borraSerp(dir[0], dir[1])
+                emitClearSnake(dir[0], dir[1]);
             }
         } else if (!turn.length) {
             //if (confirm("You lost! Play again? Your Score is " + score)) {
@@ -176,8 +177,8 @@ function init() {
         }
         doc.getElementById("score").innerHTML = score;
     }
-
-    interval = setInt(clock, 120);
+    //velocitat
+    interval = setInt(clock, 1120);
 
     doc.onkeydown = function (e) {
         //recuperamos la dirección que se ha pulsado
@@ -211,66 +212,40 @@ function init() {
     }
 }
 
-function pintaSerp(X, Y, ctx) {
+function pintaSerp(X, Y) {
     ctx.fillRect(X * 10, Y * 10, 10 - 1, 10 - 1);
 }
 
-function borraSerp(dir1, dir2, ctx) {
+function borraSerpCliente(dir1, dir2) {
     ctx.clearRect(dir1 * 10, dir2 * 10, 10, 10);
 }
 
 function emitSnake(x, y) {
-    // Each Socket.IO connection has a unique session id
-    //var sessionId = io.socket.sessionid;
-    // An object to describe the circle's draw data
     var data = {
         x: x,
         y: y
     };
-    // send a 'drawCircle' event with data and sessionId to the server
     io.emit('pintaSerp', data)
-        // Lets have a look at the data we're sending
-    console.log(data)
 }
 
 function emitClearSnake(dir1, dir2) {
-    // Each Socket.IO connection has a unique session id
-    // var sessionId = io.socket.sessionid;
-    // An object to describe the circle's draw data
     var data = {
         dir1: dir1,
         dir2: dir2
     };
-    // send a 'drawCircle' event with data and sessionId to the server
     io.emit('borraSerp', data)
-        // Lets have a look at the data we're sending
-    console.log(data)
 }
 
-
-// Listen for 'drawCircle' events
-// created by other users
 io.on('pintaSerp', function (data) {
-
     console.log('pintaSerp event recieved:', data);
-
-    // Draw the circle using the data sent
-    // from another user
     pintaSerp(data.x, data.y);
-
 })
 
-// Listen for 'drawCircle' events
-// created by other users
 io.on('borraSerp', function (data) {
-
     console.log('borraSerp event recieved:', data);
-
-    // Draw the circle using the data sent
-    // from another user
     borraSerp(data.dir1, data.dir2);
-
 })
+
 io.on("connection", function (data) {
     console.log(data);
 })
