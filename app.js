@@ -7,7 +7,8 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
-
+var http = require('http')
+var path = require('path');
 var app = express();
 
 // view engine setup
@@ -55,6 +56,31 @@ app.use(function (err, req, res, next) {
     res.render('error', {
         message: err.message,
         error: {}
+    });
+});
+
+// Enable Socket.io
+var server = http.createServer(app).listen(app.get('port'));
+var io = require('socket.io').listen(server);
+
+// A user connects to the server (opens a socket)
+io.sockets.on('connection', function (socket) {
+    socket.on('ping', function (data) {
+        console.log('socket: server recieves ping (2)');
+        io.sockets.emit('pong', data);
+        console.log('socket: server sends pong to all (3)');
+    });
+
+    socket.on('pintaSerp', function (data, session) {
+        console.log("session " + session + " pinta:");
+        console.log(data);
+        socket.broadcast.emit('pintaSerp', data);
+    });
+
+    socket.on('borraSerp', function (data, session) {
+        console.log("session " + session + " borra:");
+        console.log(data);
+        socket.broadcast.emit('borraSerp', data);
     });
 });
 

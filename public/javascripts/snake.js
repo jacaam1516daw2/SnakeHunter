@@ -129,7 +129,9 @@ function init() {
             }
 
             //pintamos nueva posicion de la serpiente en cada vuelta
-            ctx.fillRect(X * 10, Y * 10, 10 - 1, 10 - 1);
+            pintaSerp(X, Y, ctx);
+            emitSnake(X, Y, ctx);
+
             map[X][Y] = 2;
             queue.unshift([X, Y]);
             X += xV[direction];
@@ -140,7 +142,8 @@ function init() {
                 map[dir[0]][dir[1]] = 0;
                 ctx.fillStyle = color;
                 //borramos la antigua posicion de la serpiente
-                ctx.clearRect(dir[0] * 10, dir[1] * 10, 10, 10);
+                borraSerp(dir[0], dir[1], ctx)
+                emitClearSnake(dir[0], dir[1], ctx);
             }
         } else if (!turn.length) {
             //if (confirm("You lost! Play again? Your Score is " + score)) {
@@ -207,6 +210,70 @@ function init() {
         }
     }
 }
+
+function pintaSerp(X, Y, ctx) {
+    ctx.fillRect(X * 10, Y * 10, 10 - 1, 10 - 1);
+}
+
+function borraSerp(dir1, dir2, ctx) {
+    ctx.clearRect(dir1 * 10, dir2 * 10, 10, 10);
+}
+
+function emitSnake(x, y) {
+    // Each Socket.IO connection has a unique session id
+    //var sessionId = io.socket.sessionid;
+    // An object to describe the circle's draw data
+    var data = {
+        x: x,
+        y: y
+    };
+    // send a 'drawCircle' event with data and sessionId to the server
+    io.emit('pintaSerp', data)
+        // Lets have a look at the data we're sending
+    console.log(data)
+}
+
+function emitClearSnake(dir1, dir2) {
+    // Each Socket.IO connection has a unique session id
+    // var sessionId = io.socket.sessionid;
+    // An object to describe the circle's draw data
+    var data = {
+        dir1: dir1,
+        dir2: dir2
+    };
+    // send a 'drawCircle' event with data and sessionId to the server
+    io.emit('borraSerp', data)
+        // Lets have a look at the data we're sending
+    console.log(data)
+}
+
+
+// Listen for 'drawCircle' events
+// created by other users
+io.on('pintaSerp', function (data) {
+
+    console.log('pintaSerp event recieved:', data);
+
+    // Draw the circle using the data sent
+    // from another user
+    pintaSerp(data.x, data.y);
+
+})
+
+// Listen for 'drawCircle' events
+// created by other users
+io.on('borraSerp', function (data) {
+
+    console.log('borraSerp event recieved:', data);
+
+    // Draw the circle using the data sent
+    // from another user
+    borraSerp(data.dir1, data.dir2);
+
+})
+io.on("connection", function (data) {
+    console.log(data);
+})
 
 function dame_color_aleatorio() {
     hexadecimal = new Array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F")
