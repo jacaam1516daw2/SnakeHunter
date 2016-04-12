@@ -36,12 +36,10 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('pintaSerp', function (data, session) {    
         socket.broadcast.emit('pintaSerp', data);
-        console.log('pintaSerp')
     });
 
     socket.on('borraSerp', function (data, session) {      
-        socket.broadcast.emit('borraSerp', data);
-        console.log('borraSerp')
+        socket.broadcast.emit('borraSerp', data);        
     });
 });
 

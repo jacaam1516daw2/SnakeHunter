@@ -130,6 +130,8 @@ function init() {
             }
 
             //pintamos nueva posicion de la serpiente en cada vuelta
+            //pintaSerp(X, Y);
+            //ctx.fillRect(X * 10, Y * 10, 10 - 1, 10 - 1);
             pintaSerp(X, Y);
             emitSnake(X, Y);
 
@@ -143,7 +145,8 @@ function init() {
                 map[dir[0]][dir[1]] = 0;
                 ctx.fillStyle = color;
                 //borramos la antigua posicion de la serpiente
-                borraSerp(dir[0], dir[1])
+                borraSerp(dir[0], dir[1]);
+                //ctx.clearRect(dir1 * 10, dir2 * 10, 10, 10);
                 emitClearSnake(dir[0], dir[1]);
             }
         } else if (!turn.length) {
@@ -152,6 +155,7 @@ function init() {
             doc.getElementById("color").style.backgroundColor = color;
             ctx.fillStyle = color;
             ctx.clearRect(0, 0, 650, 400);
+
             queue = [];
 
             elements = 1;
@@ -178,7 +182,7 @@ function init() {
         doc.getElementById("score").innerHTML = score;
     }
     //velocitat
-    interval = setInt(clock, 1120);
+    interval = setInt(clock, 120);
 
     doc.onkeydown = function (e) {
         //recuperamos la dirección que se ha pulsado
@@ -213,10 +217,11 @@ function init() {
 }
 
 function pintaSerp(X, Y) {
+    ctx.fillStyle = 'rgb(170,0,0)';
     ctx.fillRect(X * 10, Y * 10, 10 - 1, 10 - 1);
 }
 
-function borraSerpCliente(dir1, dir2) {
+function borraSerp(dir1, dir2) {
     ctx.clearRect(dir1 * 10, dir2 * 10, 10, 10);
 }
 
@@ -237,12 +242,10 @@ function emitClearSnake(dir1, dir2) {
 }
 
 io.on('pintaSerp', function (data) {
-    console.log('pintaSerp event recieved:', data);
     pintaSerp(data.x, data.y);
 })
 
 io.on('borraSerp', function (data) {
-    console.log('borraSerp event recieved:', data);
     borraSerp(data.dir1, data.dir2);
 })
 
