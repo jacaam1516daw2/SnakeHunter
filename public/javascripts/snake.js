@@ -130,8 +130,6 @@ function init() {
             }
 
             //pintamos nueva posicion de la serpiente en cada vuelta
-            //pintaSerp(X, Y);
-            //ctx.fillRect(X * 10, Y * 10, 10 - 1, 10 - 1);
             pintaSerp(X, Y);
             emitSnake(X, Y);
 
@@ -146,16 +144,14 @@ function init() {
                 ctx.fillStyle = color;
                 //borramos la antigua posicion de la serpiente
                 borraSerp(dir[0], dir[1]);
-                //ctx.clearRect(dir1 * 10, dir2 * 10, 10, 10);
                 emitClearSnake(dir[0], dir[1]);
             }
         } else if (!turn.length) {
-            //if (confirm("You lost! Play again? Your Score is " + score)) {
             color = dame_color_aleatorio();
             doc.getElementById("color").style.backgroundColor = color;
             ctx.fillStyle = color;
-            ctx.clearRect(0, 0, 650, 400);
-
+            borraSerpMorta();
+            emitClearSnakeDead();
             queue = [];
 
             elements = 1;
@@ -174,10 +170,6 @@ function init() {
             }
 
             placeFood();
-            // } else {
-            // clInt(interval);
-            // window.location = "index.html";
-            // }
         }
         doc.getElementById("score").innerHTML = score;
     }
@@ -216,8 +208,22 @@ function init() {
     }
 }
 
+
+function borraSerpMorta() {
+    ctx.clearRect(0, 0, 650, 400);
+}
+
+function emitClearSnakeDead() {
+    var data = {};
+    io.emit('borraSerpMorta', data)
+}
+
 function pintaSerp(X, Y) {
-    ctx.fillStyle = 'rgb(170,0,0)';
+    ctx.fillRect(X * 10, Y * 10, 10 - 1, 10 - 1);
+}
+
+function pintaSerpServidor(X, Y) {
+    ctx.fillStyle = "#FF0000";
     ctx.fillRect(X * 10, Y * 10, 10 - 1, 10 - 1);
 }
 
@@ -230,7 +236,7 @@ function emitSnake(x, y) {
         x: x,
         y: y
     };
-    io.emit('pintaSerp', data)
+    io.emit('pintaSerpServidor', data)
 }
 
 function emitClearSnake(dir1, dir2) {
@@ -241,18 +247,21 @@ function emitClearSnake(dir1, dir2) {
     io.emit('borraSerp', data)
 }
 
-io.on('pintaSerp', function (data) {
-    pintaSerp(data.x, data.y);
+function pintacanvas(context) {
+    ctx = context;
+}
+
+io.on('pintaSerpServidor', function (data) {
+    pintaSerpServidor(data.x, data.y);
 })
 
 io.on('borraSerp', function (data) {
     borraSerp(data.dir1, data.dir2);
 })
 
-io.on("connection", function (data) {
-    console.log(data);
-})
-
+/*
+ * colores aleatorios
+ */
 function dame_color_aleatorio() {
     hexadecimal = new Array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F")
     color_aleatorio = "#";
@@ -263,6 +272,9 @@ function dame_color_aleatorio() {
     return color_aleatorio
 }
 
+/*
+ * random
+ */
 function aleatorio(inferior, superior) {
     numPosibilidades = superior - inferior
     aleat = Math.random() * numPosibilidades
