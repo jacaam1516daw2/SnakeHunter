@@ -12,16 +12,16 @@ var user = [{
     score: 0
 }];
 
-var teen = [];
+var ten = [];
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
     console.log('index');
-    teen = [];
+    ten = [];
     MongoClient.connect(url, function (err, db) {
         assert.equal(null, err);
         console.log("Connexió correcta");
-        topTeen(db, err, function () {});
+        topTen(db, err, function () {});
     });
     res.render('index', {
         title: 'Snake Hunter'
@@ -38,7 +38,7 @@ router.post('/login', function (req, res, next) {
         //afegirPlayers(db, err, function () {});
     });
     res.send({
-        top: teen
+        top: ten
     });
 });
 
@@ -62,14 +62,14 @@ var afegirPlayers = function (db, err, callback) {
     callback();
 };
 
-var topTeen = function (db, err, callback) {
+var topTen = function (db, err, callback) {
     var cursor = db.collection('players').find().sort({
         "puntos": -1
     });
     cursor.each(function (err, doc) {
         assert.equal(err, null);
         if (doc != null) {
-            teen.push(doc.player + ': ' + doc.puntos);
+            ten.push(doc.player + ': ' + doc.puntos);
         } else {
             callback();
         }
