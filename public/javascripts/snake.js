@@ -39,9 +39,9 @@ $(function () {
     });
 });
 var ctx;
-
+var color;
 function init() {
-    var color = dame_color_aleatorio();
+    color = dame_color_aleatorio();
 
     var turn = [];
 
@@ -219,6 +219,7 @@ function emitClearSnakeDead() {
 }
 
 function pintaSerp(X, Y) {
+    ctx.fillStyle = color;
     ctx.fillRect(X * 10, Y * 10, 10 - 1, 10 - 1);
 }
 
