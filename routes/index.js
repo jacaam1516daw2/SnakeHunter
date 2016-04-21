@@ -35,7 +35,7 @@ router.post('/login', function (req, res, next) {
     MongoClient.connect(url, function (err, db) {
         assert.equal(null, err);
         console.log("Connexió correcta");
-        //afegirPlayers(db, err, function () {});
+        afegirPlayers(db, err, function () {});
     });
     res.send({
         top: ten
@@ -48,7 +48,7 @@ router.post('/stop', function (req, res, next) {
     MongoClient.connect(url, function (err, db) {
         assert.equal(null, err);
         console.log("Connexió correcta");
-        // afegirScorePlayer(db, err, function () {});
+        afegirScorePlayer(db, err, function () {});
     });
 });
 
