@@ -59,8 +59,4 @@ app.use(function (err, req, res, next) {
     });
 });
 
-// Enable Socket.io
-var server = http.createServer(app).listen(app.get('port'));
-var io = require('socket.io').listen(server);
-
 module.exports = app;

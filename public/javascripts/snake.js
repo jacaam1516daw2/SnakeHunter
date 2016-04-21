@@ -38,10 +38,12 @@ $(function () {
         });
     });
 });
+
 var ctx;
-var color;
+var color = "#00ff00";
+
 function init() {
-    color = dame_color_aleatorio();
+    $('canvas').remove();
 
     var turn = [];
 
@@ -103,7 +105,7 @@ function init() {
         } while (map[x][y]);
 
         map[x][y] = 1;
-        ctx.strokeStyle = dame_color_aleatorio();
+        ctx.strokeStyle = "#ffff00"; //dame_color_aleatorio();
         ctx.strokeRect(x * 10 + 1, y * 10 + 1, 10 - 2, 10 - 2);
     }
     placeFood();
@@ -147,7 +149,6 @@ function init() {
                 emitClearSnake(dir[0], dir[1]);
             }
         } else if (!turn.length) {
-            color = dame_color_aleatorio();
             doc.getElementById("color").style.backgroundColor = color;
             ctx.fillStyle = color;
             borraSerpMorta();
@@ -190,6 +191,7 @@ function init() {
         if (0 <= code && code < 4 && code !== turn[0]) {
             turn.unshift(code);
         } else if (-5 == code) {
+            $('canvas').remove();
             //Si pulsamos la barra de espacio hacemos una pausa en el juego
             // parando el interval
             if (interval) {
@@ -208,14 +210,12 @@ function init() {
     }
 }
 
+function borraSerp(dir1, dir2) {
+    ctx.clearRect(dir1 * 10, dir2 * 10, 10, 10);
+}
 
 function borraSerpMorta() {
     ctx.clearRect(0, 0, 650, 400);
-}
-
-function emitClearSnakeDead() {
-    var data = {};
-    io.emit('borraSerpMorta', data)
 }
 
 function pintaSerp(X, Y) {
@@ -228,16 +228,17 @@ function pintaSerpServidor(X, Y) {
     ctx.fillRect(X * 10, Y * 10, 10 - 1, 10 - 1);
 }
 
-function borraSerp(dir1, dir2) {
-    ctx.clearRect(dir1 * 10, dir2 * 10, 10, 10);
-}
-
 function emitSnake(x, y) {
     var data = {
         x: x,
         y: y
     };
     io.emit('pintaSerpServidor', data)
+}
+
+function emitClearSnakeDead() {
+    var data = {};
+    io.emit('borraSerpMorta', data)
 }
 
 function emitClearSnake(dir1, dir2) {
@@ -248,10 +249,6 @@ function emitClearSnake(dir1, dir2) {
     io.emit('borraSerp', data)
 }
 
-function pintacanvas(context) {
-    ctx = context;
-}
-
 io.on('pintaSerpServidor', function (data) {
     pintaSerpServidor(data.x, data.y);
 })
@@ -260,25 +257,6 @@ io.on('borraSerp', function (data) {
     borraSerp(data.dir1, data.dir2);
 })
 
-/*
- * colores aleatorios
- */
-function dame_color_aleatorio() {
-    hexadecimal = new Array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F")
-    color_aleatorio = "#";
-    for (i = 0; i < 6; i++) {
-        posarray = aleatorio(0, hexadecimal.length)
-        color_aleatorio += hexadecimal[posarray]
-    }
-    return color_aleatorio
-}
-
-/*
- * random
- */
-function aleatorio(inferior, superior) {
-    numPosibilidades = superior - inferior
-    aleat = Math.random() * numPosibilidades
-    aleat = Math.floor(aleat)
-    return parseInt(inferior) + aleat
-}
+io.on('borraSerpMorta', function (data) {
+    borraSerpMorta(data.x, data.y);
+})
